@@ -18,12 +18,52 @@ variable "desired_capacity" {
   description = "Default size of your manager swarm (1, 3, 5)"
 }
 
+variable "autoscaling_min_size" {
+  description = "defined the minimum amount of the nodes you want in your autoscaling group"
+}
+
+variable "autoscaling_max_size" {
+  description = "defined the maximum amount of the nodes you want in your autoscaling group"
+}
+
+variable "do_autoscaling_lifecycle_hook" {
+  type        = bool
+  description = "defined if or not the lifecycle hook wil be created"
+  default     = false
+}
+
 variable "root_volume_size" {
   description = "Size of the filesystem mounted on `/`"
 }
 
 variable "rabbit_volume_size" {
   description = "Size of the docker filesystem mount point"
+}
+
+variable "rabbitmq_version" {
+  description = "The version of the rabbitmq that you want install. To see all versions click this link: https://dl.bintray.com/rabbitmq/debian/dists/"
+  default     = "main" # rabbitmq-server-v3.6.x, rabbitmq-server-v3.7.x, rabbitmq-server-v3.8.x/
+}
+
+variable "erlang_version" {
+  description = "The version of the rabbitmq that you want install. To see all versions click this link: https://dl.bintray.com/rabbitmq-erlang/debian/dists/"
+  default     = "erlang" # erlang-16.x, erlang-19.x, erlang-20.x, erlang-21.x, erlang-22.x
+}
+
+variable "rabbitmq_admin_user" {
+  description = "The admin username to connect at rabbitmq by manager panel and amqp"
+  default     = "admin"
+}
+
+variable "rabbitmq_admin_password" {
+  description = "The admin password to connect at rabbitmq by manager panel and amqp"
+  default     = "admin"
+}
+
+variable "rabbitmq_remove_guest_user" {
+  type        = bool
+  description = "remove default guest user from rabbitmq"
+  default     = false
 }
 
 variable "image_id" {

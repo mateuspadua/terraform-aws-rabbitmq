@@ -5,14 +5,17 @@ data "template_file" "rabbit-node" {
   template = file("${path.module}/user_data/rabbitmq.sh")
 
   vars = {
-    AWS_REGION        = var.region
-    VPC_ID            = var.vpc_id
-    ERL_SECRET_COOKIE = var.erl_secret_cookie
-    AWS_ACCESS_KEY    = var.aws_access_key
-    AWS_SECRET_KEY    = var.aws_secret_key
-    RABBITMQ_VERSION  = var.rabbitmq_version
-    ERLANG_VERSION    = var.erlang_version
-    CLUSTER_NAME      = "${var.cluster_fqdn}-${var.name}-${var.environment}"
+    AWS_REGION                 = var.region
+    VPC_ID                     = var.vpc_id
+    ERL_SECRET_COOKIE          = var.erl_secret_cookie
+    AWS_ACCESS_KEY             = var.aws_access_key
+    AWS_SECRET_KEY             = var.aws_secret_key
+    RABBITMQ_VERSION           = var.rabbitmq_version
+    ERLANG_VERSION             = var.erlang_version
+    CLUSTER_NAME               = "${var.cluster_fqdn}-${var.name}-${var.environment}"
+    RABBITMQ_ADMIN_USER        = var.rabbitmq_admin_user
+    RABBITMQ_ADMIN_PASSWORD    = var.rabbitmq_admin_password
+    RABBITMQ_REMOVE_GUEST_USER = var.rabbitmq_remove_guest_user
   }
 }
 
@@ -114,6 +117,7 @@ resource "aws_autoscaling_policy" "rabbit-node-scale-down" {
 }
 
 resource "aws_autoscaling_lifecycle_hook" "rabbit-node-upgrade" {
+  count                  = var.do_autoscaling_lifecycle_hook ? 1 : 0
   name                   = "${var.name}-${var.environment}-rabbit-node-upgrade-hook"
   autoscaling_group_name = aws_autoscaling_group.rabbit-node.name
   default_result         = "CONTINUE"

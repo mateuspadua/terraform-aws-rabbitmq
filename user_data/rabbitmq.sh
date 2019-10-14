@@ -144,6 +144,13 @@ apt-get install -y --fix-missing \
     erlang \
     rabbitmq-server
 
+rabbitmqctl add_user ${RABBITMQ_ADMIN_USER} ${RABBITMQ_ADMIN_PASSWORD}
+rabbitmqctl set_user_tags ${RABBITMQ_ADMIN_USER} administrator
+rabbitmqctl set_permissions -p / ${RABBITMQ_ADMIN_USER} ".*" ".*" ".*"
+
+remove_guest_user=${RABBITMQ_REMOVE_GUEST_USER}
+if [[ $remove_guest_user = true ]]; then
+  rabbitmqctl delete_user guest
+fi
 
 rabbitmqctl set_cluster_name ${CLUSTER_NAME}
-

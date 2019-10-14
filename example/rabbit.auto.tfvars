@@ -5,6 +5,11 @@ ssh_key_name = "Insert your ssh key name here"
 root_volume_size       = 50 # /
 rabbit_volume_size     = 50 # /var/lib/rabbitmq
 instance_ebs_optimized = false
+# rabbitmq_version           = "rabbitmq-server-v3.7.x"  # rabbitmq-server-v3.6.x, rabbitmq-server-v3.7.x, rabbitmq-server-v3.8.x/
+# erlang_version             = "erlang-21.x"  # erlang-16.x, erlang-19.x, erlang-20.x, erlang-21.x, erlang-22.x
+rabbitmq_admin_user        = "your_username"
+rabbitmq_admin_password    = "your_password"
+rabbitmq_remove_guest_user = true
 
 ## AMI
 # Note : AMI are region-related make sure the AMI you choose is available in your region

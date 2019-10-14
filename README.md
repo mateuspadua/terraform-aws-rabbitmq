@@ -20,6 +20,33 @@ I'll let you refer to our other modules if you want to use them, otherwise it sh
 Apart from the network, there is not much configuration to do as you can see in the example folder. Here are the main settings:
 
 ```hcl
+module "alb" {
+  source = "path/to/module/rabbitmq-alb"
+
+  # General settings
+  environment = "Specify the environment (Prod/Staging/Test/whatever...)"
+  name        = "An useful name to identify your clustser"
+
+  internal    = false
+  domain_name = "yourdomain.com"
+
+  cluster_fqdn = "test"
+
+  # Network
+  subnet_ids = ["subnet-xxxxxx", "subnet-yyyyyy"]
+
+  # Autoscaling target group
+  # Note: only the servers need an ALB (only the servers expose an UI)
+  autoscaling_group = module.rabbit.autoscaling_group
+
+  #   allowed_inbound_cidr_blocks = var.ingress_public_cidr_blocks
+  alb_security_group = module.rabbit.security_group_id
+
+  # # External Settings
+  certificate_arn = "arn:aws:acm:eu-west-3:xxxxxxxxxxxxx"
+  vpc_id          = "vpc-xxxxxx"
+}
+
 module "rabbit" {
   source = "path/to/module"
 
@@ -39,12 +66,13 @@ module "rabbit" {
   # https://github.com/CitizenPlane/terraform-aws-rabbitmq/blob/dc123d34742202811455d1bea50cb5f779186d2f/user_data/rabbitmq.sh#L122
   cluster_fqdn = "test"
 
-  region                 = "eu-west-3"
-  ssh_key_name           = "ft_ssh_key"
-  desired_capacity       = 3
-  autoscaling_min_size   = 3
-  autoscaling_max_size   = 5
-  instance_ebs_optimized = false
+  region                        = "eu-west-3"
+  ssh_key_name                  = "ft_ssh_key"
+  desired_capacity              = 3
+  autoscaling_min_size          = 3
+  autoscaling_max_size          = 5
+  do_autoscaling_lifecycle_hook = false
+  instance_ebs_optimized        = false
 
   vpc_id = "vpc_id"
 
@@ -53,6 +81,11 @@ module "rabbit" {
 
   root_volume_size   = 20 # /
   rabbit_volume_size = 50 # /var/lib/rabbitmq
+  # rabbitmq_version           = "rabbitmq-server-v3.7.x"  # rabbitmq-server-v3.6.x, rabbitmq-server-v3.7.x, rabbitmq-server-v3.8.x/
+  # erlang_version             = "erlang-21.x"  # erlang-16.x, erlang-19.x, erlang-20.x, erlang-21.x, erlang-22.x
+  rabbitmq_admin_user        = "your_username"
+  rabbitmq_admin_password    = "your_password"
+  rabbitmq_remove_guest_user = true
 
   associate_public_ip_address = true
 
